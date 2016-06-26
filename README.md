@@ -8,5 +8,3 @@ ISIS3 main website: https://isis.astrogeology.usgs.gov/
 ISIS3 support pages: https://isis.astrogeology.usgs.gov/fixit/projects/isis/news/
 
 This scripts are not officially support and are to be used at your own risk.
-
-
