@@ -1,4 +1,5 @@
 LROC_process_all.csh
+'''
 LROC Narrow Angle image processing in ISIS3 to map projected images
 -Trent Hare
 
@@ -38,3 +39,5 @@ Tip: this will leave it up to ISIS to figure out the cellsize. If you want to la
 where usage is: LROC_process_all.script.txt maptemplate.map [0|1] 
 0 = keep all files as you go 
 1 = delete old files as you go 
+
+'''

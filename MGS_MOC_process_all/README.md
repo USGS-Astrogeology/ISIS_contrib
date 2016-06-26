@@ -1,4 +1,5 @@
 MOCna_process_all_jp2.csh
+'''
 MOC Narrow Angle image processing in ISIS3 exporting to GeoJp2s.
 -Trent Hare
 July 2009
@@ -60,14 +61,5 @@ where usage is: MOCna_process_all.script.txt maptemplate.map [0|1]
 4.) to change the output to another format see (simply make a change in the *.csh script for the isis3gdal_jp2.pl call):
 http://isis.astrogeology.usgs.gov/IsisSupport/viewtopic.php?t=1456
 
-5.) To setup GDAL in your path 
-2.) download and untar FWTools-X.X.X on linux. 
-- cd FWTools-X.X.X and run "./install.sh" 
-- Place this directory ".../FWTools-X.X.X/bin_safe" into your path 
 
-download: http://fwtools.maptools.org/ 
-
-Whew...
-
-good luck,
-Trent
+'''
