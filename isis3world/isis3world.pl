@@ -10,7 +10,7 @@
 #
 # Note this version does not need ISIS 3 installed to run
 #
-#  Pieces of code used are originally from Robert Herrick
+#  Pieces of code used are originally from Dr. Herrick
 #
 #_ARGS  
 #
