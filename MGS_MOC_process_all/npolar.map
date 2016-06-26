@@ -1,0 +1,7 @@
+Group = Mapping 
+  ProjectionName  = PolarStereographic 
+  CenterLongitude = 0.0 
+  CenterLatitude  = 90.0 
+End_Group 
+End 
+

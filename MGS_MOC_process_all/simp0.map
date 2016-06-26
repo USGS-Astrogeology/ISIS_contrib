@@ -1,0 +1,10 @@
+Group = Mapping
+  ProjectionName     = SimpleCylindrical
+  CenterLongitude    = 0.0
+  EquatorialRadius   = 3396190.0 <meters>
+  PolarRadius        = 3376200.0 <meters>
+  LatitudeType       = Planetocentric
+  LongitudeDirection = PositiveEast
+  LongitudeDomain    = 180
+End_Group
+End
