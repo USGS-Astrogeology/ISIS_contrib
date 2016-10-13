@@ -1,30 +1,23 @@
-_TITLE kaguyamiproc.pl - Ingest a PDS formatted Kaguya MI Level2B file and add 
-                         mapping labels to it.
-			 filename example: MVA_2B2_01_02024S140E3586.img
+##Program:
+** kaguyamiproc.pl ** - Ingest a PDS formatted Kaguya MI Level2B file and add map projection labels to it.
 
 
-A Level 2B file will have these keywrods in the label:
+A Level 2B file will have these keywords in the label:
 
-PROCESS_VERSION_ID                   = "L2B"
+* PROCESS_VERSION_ID                   = "L2B"
+* PRODUCER_ID                          = "LISM"
+* PRODUCT_SET_ID                       = "MI-VIS_Level2B2"
+* MISSION_NAME                         = "SELENE"
+* SPACECRAFT_NAME                      = "SELENE-M"
+* DATA_SET_ID                          = "MI-VIS_Level2B"
+* INSTRUMENT_NAME                      = "Multiband Imager Visible"
+* INSTRUMENT_ID                        = "MI-VIS"
 
-PRODUCER_ID                          = "LISM"
+* filename example: MVA_2B2_01_02024S140E3586.img
 
-PRODUCT_SET_ID                       = "MI-VIS_Level2B2"
+##ARGS  
 
-MISSION_NAME                         = "SELENE"
-
-SPACECRAFT_NAME                      = "SELENE-M"
-
-DATA_SET_ID                          = "MI-VIS_Level2B"
-
-INSTRUMENT_NAME                      = "Multiband Imager Visible"
-
-INSTRUMENT_ID                        = "MI-VIS"
-
-
-_ARGS  
-
-_Parm  inputfile = Input file name. This can either be a PDS formatted
+Parm  inputfile = Input file name. This can either be a PDS formatted
        Kaguya MI image file or an ascii file containing a list of input 
        PDS formatted Kaguya MI image filenames. You must include the
        complete filename (no default extension is assumed). If you 
@@ -32,7 +25,7 @@ _Parm  inputfile = Input file name. This can either be a PDS formatted
        in the list. If you are specifying a file list, then use the
        -l option to tell the script that it is a list.
 
-_USER  Command line entry options:
+##Command line entry options:
 
  kaguyamiproc.pl [-l] inputfile
 
@@ -46,5 +39,5 @@ _USER  Command line entry options:
 
         kaguyamiproc.pl -l input.lst
 
-_HIST
+## HIST
     Jun 13 2011 - Janet Barrett - original version 
