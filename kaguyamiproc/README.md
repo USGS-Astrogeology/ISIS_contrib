@@ -1,5 +1,5 @@
 ##Program:
-** kaguyamiproc.pl ** - Ingest a PDS formatted Kaguya MI Level2B file and add map projection labels to it.
+**kaguyamiproc.pl** - Ingest a PDS formatted Kaguya MI Level2B file and add map projection labels to it. Filename example: MVA_2B2_01_02024S140E3586.img
 
 
 A Level 2B file will have these keywords in the label:
@@ -12,8 +12,6 @@ A Level 2B file will have these keywords in the label:
 * DATA_SET_ID                          = "MI-VIS_Level2B"
 * INSTRUMENT_NAME                      = "Multiband Imager Visible"
 * INSTRUMENT_ID                        = "MI-VIS"
-
-* filename example: MVA_2B2_01_02024S140E3586.img
 
 ##ARGS  
 
