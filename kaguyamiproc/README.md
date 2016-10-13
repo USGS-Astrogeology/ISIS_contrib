@@ -4,15 +4,21 @@ _TITLE kaguyamiproc.pl - Ingest a PDS formatted Kaguya MI Level2B file and add
 
 
 A Level 2B file will have these keywrods in the label:
+
 PROCESS_VERSION_ID                   = "L2B"
-...
+
 PRODUCER_ID                          = "LISM"
+
 PRODUCT_SET_ID                       = "MI-VIS_Level2B2"
-...
+
 MISSION_NAME                         = "SELENE"
+
 SPACECRAFT_NAME                      = "SELENE-M"
+
 DATA_SET_ID                          = "MI-VIS_Level2B"
+
 INSTRUMENT_NAME                      = "Multiband Imager Visible"
+
 INSTRUMENT_ID                        = "MI-VIS"
 
 
@@ -31,6 +37,7 @@ _USER  Command line entry options:
  kaguyamiproc.pl [-l] inputfile
 
  Examples:
+ 
     1) To process a single Kaguya MI file
 
         kaguyamiproc.pl input.img 
