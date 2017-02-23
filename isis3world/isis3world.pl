@@ -372,13 +372,13 @@ while (<INIMAGE>) {
      ##############################################################
      if (/EquatorialRadius/) {
         @a_axis = split(/ = /,$_) ;
-        $a_axis = @a_axis[1];
-        $a_axis = $a_axis.replace("<meters>") * 1;
+        $a_axis = @a_axis[1] * 1;
+        #$a_axis = $a_axis.replace("<meters>") * 1;
      }
      if (/PolarRadius/) {
         @c_axis = split(/ = /,$_) ;
-        $c_axis = @c_axis[1];
-        $c_axis = $c_axis.replace("<meters>") * 1;
+        $c_axis = @c_axis[1] * 1;
+        #$c_axis = $c_axis.replace("<meters>") * 1;
      }
      if (/CenterLongitude/) {
         @clon = split(/ = /,$_) ;
