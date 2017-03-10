@@ -20,7 +20,7 @@ _LICENSE Public domain
 
 
 Example runs:
-
+```
 > g++ -o ISIS_scaledRadiusEquirectangular_Mars ISIS_scaledRadiusEquirectangular_Mars.cpp
 
 > ./ISIS_scaledRadiusEquirectangular_Mars 45 0
@@ -40,3 +40,4 @@ Example runs:
 
 > ./ISIS_scaledRadiusEquirectangular_Mars -14.5 0
 3394926.37777623  = Local Radius
+```
