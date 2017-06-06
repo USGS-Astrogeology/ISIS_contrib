@@ -1,7 +1,9 @@
 # ISIS3 to PDS3 Label Translator #
 ``isis3_lbl_to_pds3_lbl.py`` is a rudimentary script for translating detached ISIS3 labels into detached PDS3 labels. 
 The script was developed specifically to translate labels from high-level map-projected image products that are distributed on the USGS Astropedia
-(<https://astrogeology.usgs.gov/search>). It is **not** a generic translator for ISIS3 labels.
+(<https://astrogeology.usgs.gov/search>). 
+
+The translator requires a very specific set of keywords (mostly map projection parameters), allows for a specific set of optional keywords, and ignores everything else in the input. It is **not** a generic translator for ISIS3 labels.
 
 The script aims to produce labels can best be described as "PDS3 compatible" if not strictly "PDS3 compliant." In practice, this means
 that given a valid ISIS3 label for a map-projected image product, the script will return a PDS3 label that can be successfully interpreted by 
