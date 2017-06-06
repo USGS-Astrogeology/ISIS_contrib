@@ -13,4 +13,4 @@ the ISIS3 program ``pds2isis``, as well as by geospatial software such as GDAL a
 ## Basic Usage ##
 Executing
 ``isis3_lbl_to_pds3_lbl.py input.lbl``
-will parse an ISIS3 label named ``input.lbl`` and return a PDS3 label file named ``isis3_label_pds3.lbl``
+will parse an ISIS3 label named ``input.lbl`` and return a PDS3 label file named ``input_pds3.lbl``
