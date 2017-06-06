@@ -1,4 +1,18 @@
 #!/usr/bin/env python3
+
+#/******************************************************************************
+# * $Id$
+# *
+# * Name:     isis3_lbl_to_pds3_lbl.py
+# * Purpose:  Translate a detached ISIS3 label associated with a map-projected
+# *           image product into a PDS3-compliant label file. 
+# * Author:   David P. Mayer, dpmayer@usgs.gov
+# *
+# * License: Public Domain
+# *
+# ******************************************************************************
+
+
 import sys
 import re
 import fileinput

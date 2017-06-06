@@ -1,0 +1,68 @@
+Object = IsisCube
+  Object = Core
+    StartByte = 5085
+    Format    = BandSequential
+
+    Group = Dimensions
+      Samples = 2640
+      Lines   = 1680
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = UnsignedByte
+      ByteOrder  = Lsb
+      Base       = 0.0
+      Multiplier = 1.0
+    End_Group
+    ^Core     = Triton_Voyager2_Sinusoidal_Airbrush_Mosaic_1472m.tif
+  End_Object
+
+  Group = Instrument
+    TargetName = Triton
+  End_Group
+
+  Group = BandBin
+    Center       = 0
+    OriginalBand = 1
+  End_Group
+
+  Group = Mapping
+    ProjectionName     = Sinusoidal
+    CenterLongitude    = 0
+    TargetName         = Triton
+    EquatorialRadius   = 1350000 <meters>
+    PolarRadius        = 1350000 <meters>
+    LatitudeType       = Planetocentric
+    LongitudeDirection = PositiveEast
+    LongitudeDomain    = 180
+    MinimumLatitude    = -60
+    MaximumLatitude    = 45
+    MinimumLongitude   = -75
+    MaximumLongitude   = 90
+    UpperLeftCornerX   = -1767145.91999999993 <meters>
+    UpperLeftCornerY   = 1060287.55199999991 <meters>
+    PixelResolution    = 1472.62159999999994 <meters/pixel>
+    Scale              = 16 <pixels/degree>
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 1633             
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 1
+  Bytes     = 1022
+  ^History  = Triton_Voyager2_Sinusoidal_Airbrush_Mosaic_1472m.History.IsisCube
+End_Object
+
+Object = OriginalLabel
+  Name           = IsisCube
+  StartByte      = 1
+  Bytes          = 2301
+  ^OriginalLabel = Triton_Voyager2_Sinusoidal_Airbrush_Mosaic_1472m.OriginalLa-
+                   bel.IsisCube
+End_Object
+End
