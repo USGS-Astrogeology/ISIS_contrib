@@ -182,7 +182,9 @@ pds3label.append('IMAGE', pvl.PVLModule({
     'SAMPLE_BITS': samplebits,
     'SAMPLE_TYPE': sampletype,
     'BANDS' : isis3lbl['IsisCube']['Core']['Dimensions']['Bands'],
-    'BAND_STORAGE_TYPE' : bandstoragetype}))
+    'BAND_STORAGE_TYPE' : bandstoragetype,
+    'SCALING_FACTOR' : scalingfactor,
+    'OFFSET' : offset}))
 
 
 # Map Projection Information
