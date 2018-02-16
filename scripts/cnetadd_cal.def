@@ -1,0 +1,5 @@
+  Group = ValidMeasure       
+    MinDN         = -1
+    MaxDN         = 1
+  EndGroup
+
