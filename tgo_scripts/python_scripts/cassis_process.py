@@ -198,6 +198,173 @@ def generate_filter_control(images, output_network, filter, log_dir=''):
     return status
 
 
+def combine_nets(networks, combined_net, images, def_file, clean=True):
+    """
+    Combine a list of networks into one single network.
+    This method will also attempt to add depth to the network.
+
+    Parameters
+    ----------
+    networks : list
+               The list of networks to combine
+
+    combined_net : str
+                   The output combined network.
+                   If any of the parent directories do not exist, they will be created.
+
+    images : list
+             A list of all the images contained in the networks
+
+    def_file : str
+               The def file used with pointreg to sub-pixel register the combined network.
+
+    clean : bool
+            If the final network should have mesaures that failed to be registered removed.
+            Defaults to True
+
+    Returns
+    -------
+    status : int
+             The return status of the applications.
+    """
+    # make file lists of the networks and images
+    networks_file_list = os.path.join(temp_dir, "nets.lis")
+    images_file_list = os.path.join(temp_dir, "images.lis")
+    make_file_list(networks, networks_file_list)
+    make_file_list(images, images_file_list)
+
+    # make sure the output directory exists
+    output_dir = os.path.dirname(combined_net)
+    if output_dir and not(os.path.exists(output_dir)):
+        os.makedirs(output_dir)
+
+    # make the inbetween file names
+    output_basename = os.path.splitext(combined_net)[0]
+    cnetcombinept_net = output_basename + '_combined.net'
+    added_net = output_basename + '_added.net'
+    if clean:
+        regged_net = output_basename + '_regged.net'
+    else:
+        regged_net = combined_net
+
+    # combine the networks
+    combine_command = 'cnetcombinept cnetlist={}'.format(networks_file_list)
+    combine_command += ' onet={}'.format(cnetcombinept_net)
+    status = os.system(combine_command)
+    if status != 0:
+        print('failed to combine networks with command:')
+        print(combine_command)
+        return status
+
+    # add the images for depth
+    add_command = 'cnetadd fromlist={}'.format(images_file_list)
+    add_command += ' cnet={}'.format(cnetcombinept_net)
+    add_command += ' addlist={}'.format(images_file_list)
+    add_command += ' onet={}'.format(added_net)
+    status = os.system(add_command)
+    if status != 0:
+        print('Failed to create depth in the combined network with command:')
+        print(add_command)
+        return status
+
+    # sub-pixel register the newly added points
+    pointreg_command = 'pointreg fromlist={}'.format(images_file_list)
+    pointreg_command += ' cnet={}'.format(added_net)
+    pointreg_command += ' onet={}'.format(regged_net)
+    pointreg_command += ' deffile={}'.format(def_file)
+    status = os.system(pointreg_command)
+    if status != 0:
+        print('Failed to sub pixel register network with command:')
+        print(pointreg_command)
+        return status
+
+    # optionally remove measures that failed to be registered
+    if clean:
+        clean_command = 'cnetedit cnet={}'.format(regged_net)
+        clean_command += ' onet={}'.format(combined_net)
+        status = os.system(clean_command)
+        if status != 0:
+            print('Failed to clean network with command:')
+            print(clean_command)
+            return status
+
+    # clean up
+    os.remove(networks_file_list)
+    os.remove(images_file_list)
+    return status
+
+
+def bundle_network(network, output_network, images, held_image, log_prefix,
+                   angle_sigma=1, update=True):
+    """
+    Bundle adjust a control network.
+
+    Parameters
+    ----------
+    network : str
+              The input control network file to adjust
+
+    output_network : str
+                     The output adjusted control network file.
+
+    images : list
+             The list of images in the network.
+
+    held_image : str
+                 The image to hold fixed.
+
+    log_prefix : str
+                 The prefix for the bundle output files.
+
+    angle_sigma : float
+                  The sigma value for the camera angles in the bundle.
+
+    update : bool
+             If the images will have their camera pointing updated. Defaults to True.
+
+    Returns
+    -------
+    status : int
+             The return status of the jigsaw application.
+    """
+    # make sure the output and log directories exists
+    output_dir = os.path.dirname(output_network)
+    if output_dir and not(os.path.exists(output_dir)):
+        os.makedirs(output_dir)
+    log_dir = os.path.dirname(log_prefix)
+    if log_dir and not(os.path.exists(log_dir)):
+        os.makedirs(log_dir)
+
+    # make the input file lists
+    images_file_list = os.path.join(temp_dir, 'images.lis')
+    make_file_list(images, images_file_list)
+    held_list = [held_image]
+    held_file_list = os.path.join(temp_dir, 'held.lis')
+    make_file_list(held_list, held_file_list)
+
+
+    # run the bundle adjustment
+    bundle_command = 'jigsaw fromlist={}'.format(images_file_list)
+    bundle_command += ' heldlist={}'.format(held_file_list)
+    bundle_command += ' cnet={}'.format(network)
+    bundle_command += ' onet={}'.format(output_network)
+    bundle_command += ' camera_angles_sigma={}'.format(angle_sigma)
+    bundle_command += ' file_prefix={}'.format(log_prefix)
+    if update:
+        bundle_command += ' update=true'
+    status = os.system(bundle_command)
+    if status != 0:
+        print('Failed to bundle adjust network with command:')
+        print(bundle_command)
+        return status
+
+    # clean up
+    os.remove(images_file_list)
+    os.remove(held_file_list)
+
+    return status
+
+
 def make_map_file(images, output_file):
     """
     Make a equirectangular map file that covers a list of images
@@ -301,6 +468,10 @@ def mosaic_filter(filenames, output_file, map_file=''):
     image_list_file = os.path.join(temp_dir, "framelets.lis")
     make_file_list(filenames, image_list_file)
 
+    output_dir = os.path.dirname(output_file)
+    if output_dir and not(os.path.exists(output_dir)):
+        os.makedirs(output_dir)
+
     command = 'automos fromlist={} mosaic={}'.format(image_list_file, output_file)
 
     if map_file:
@@ -330,6 +501,49 @@ def mosaic_filter(filenames, output_file, map_file=''):
     os.system(command)
 
     os.remove(image_list_file)
+
+def coreg_image(image, output_image, reference_image, output_network):
+    """
+    Subpixel register one image to another.
+
+    Parameters
+    ----------
+    image : str
+            The image to be registered
+
+    output_image : str
+                   The output registered image
+
+    reference_image : str
+                      The image to register to
+
+    output_network : str
+                     The output control network
+
+    Returns
+    -------
+    status : int
+             The return status of the coreg application
+    """
+    # ensure that output directories exist
+    output_dir = os.path.dirname(output_image)
+    if output_dir and not(os.path.exists(output_dir)):
+        os.makedirs(output_dir)
+    network_dir = os.path.dirname(output_network)
+    if network_dir and not(os.path.exists(network_dir)):
+        os.makedirs(network_dir)
+
+    # do the registration
+    command = 'coreg from={}'.format(image)
+    command += ' to={}'.format(output_image)
+    command += ' match={}'.format(reference_image)
+    command += ' transform=warp onet={}'.format(output_network)
+    status = os.system(command)
+    if status != 0:
+        print('Failed to sub pixel register image with command:')
+        print(command)
+    return status
+
 
 def stack_mosaics(mosaics, output_file):
     """
