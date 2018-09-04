@@ -36,8 +36,44 @@ source /usgs/cpkgs/isis3/isis3mgr_scripts/initIsisCmake.sh isis3nightly
 basename=`cat $1 |head -n ${taskid} |tail -1`
 echo "Processing image: $basename"
 
-todir="reproj_pixres"
-inputdir="resolution"
+raw_dir="/work/projects/rosetta/psa_osiris_data/psa.esac.esa.int/pub/mirror/INTERNATIONAL-ROSETTA-MISSION/OSINAC/RO-C-OSINAC-3-PRL-67PCHURYUMOV-M06-V2.0/DATA/2014_08"
+ingested_dir="ingested"
+mask_dir="masked"
+pixres_dir="resolution"
+reproj_dn_dir="reproj"
+reproj_pixres_dir="reproj_pixres"
+stacked_dir="stacked_reproj"
+
+mkdir -p $ingested_dir
+mkdir -p $mask_dir
+mkdir -p $pixres_dir
+mkdir -p $reproj_dn_dir
+mkdir -p $reproj_pixres_dir
+mkdir -p $stacked_dir
+
+
+# Ingest the image
+rososiris2isis from=$raw_dir/$basename.IMG to=$ingested_dir/$basename.cub
+
+# spiceinit the image
+spiceinit from=$ingested_dir/$basename.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet
 
 # Mask the image
-cam2cam from=$inputdir/$basename"_pixres.cub" to=$todir/$basename"reproj_pixres.cub" match=N20140806T051914575ID30F22.cub
+mask minimum=0.00001 from=$ingested_dir/$basename.cub to=$mask_dir/$basename.cub
+
+# compute the pixel resolution
+camdev dn=no planetocentriclatitude=no pixelresolution=yes from=$mask_dir/$basename.cub to=$pixres_dir/$basename.cub
+
+# reproject the image data
+cam2cam from=$mask_dir/$basename.cub to=$reproj_dn_dir/$basename.cub match=N20140806T051914575ID30F22.cub
+
+# reproject the pixel resolution
+cam2cam from=$pixres_dir/$basename.cub to=$reproj_pixres_dir/$basename.cub match=N20140806T051914575ID30F22.cub
+
+# adjust the pixel resolution label
+editlab from=$reproj_pixres_dir/$basename.cub grpname=BandBin keyword=CombinedFilterName value=pixel_resolution
+
+# stack the image data and pixel resolution data
+echo $reproj_dn_dir/$basename.cub > $stacked_dir/$basename.lis
+echo $reproj_pixres_dir/$basename.cub >> $stacked_dir/$basename.lis
+cubeit fromlist=$stacked_dir/$basename.lis to=$stacked_dir/$basename.cub
