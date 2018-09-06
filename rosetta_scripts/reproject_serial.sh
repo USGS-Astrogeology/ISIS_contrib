@@ -9,7 +9,6 @@
 
 
 firstTimeThru=true
-workdir="/work/projects/rosetta/hydra_images"  # same as --workdir
 
 source /usgs/cpkgs/isis3/isis3mgr_scripts/initIsisCmake.sh isis3nightly
 
