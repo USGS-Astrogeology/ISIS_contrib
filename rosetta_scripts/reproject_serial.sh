@@ -74,7 +74,7 @@ for basename in `cat $1`; do
 
   # mosaic the first image:
   if "$firstTimeThru"; then
-    handmos from=$ingested_dir/N20140806T051914575ID30F22.cub mosaic=stacked.cub priority=average create=yes nsamples=2048 nlines=2048 nbands=1 >& /dev/null
+    handmos from=$stacked_dir/N20140806T051914575ID30F22.cub mosaic=stacked.cub priority=average create=yes nsamples=2048 nlines=2048 nbands=1 >& /dev/null
     firstTimeThru=false
   fi
   # mosaic the rest:
