@@ -11,15 +11,6 @@
 firstTimeThru=true
 workdir="/work/projects/rosetta/hydra_images"  # same as --workdir
 
-
-for basename in `cat $1`; do
-
-  echo "Processing image: $basename"
-  if "$firstTimeThru"; then
-     firstTimeThru=false
-  fi
-done
-
 source /usgs/cpkgs/isis3/isis3mgr_scripts/initIsisCmake.sh isis3nightly
 
 raw_dir="/work/projects/rosetta/psa_osiris_data/psa.esac.esa.int/pub/mirror/INTERNATIONAL-ROSETTA-MISSION/OSINAC/RO-C-OSINAC-3-PRL-67PCHURYUMOV-M06-V2.0/DATA/2014_08"
