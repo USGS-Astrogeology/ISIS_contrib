@@ -1,5 +1,4 @@
 #!/bin/bash
-#SBATCH --partition=longall
 
 # Script to reproject a single of Rosetta OSIRIS images into the perspective of another image.
 # The ISISROOT variable must be set.
@@ -25,12 +24,13 @@ if [$ISISROOT == ""]; then
 fi
 
 raw_dir=$3
-ingested_dir=$4"/ingested"
-mask_dir=$4"/masked"
-pixres_dir=$4"/resolution"
-reproj_dn_dir=$4"/reproj"
-reproj_pixres_dir=$4"/reproj_pixres"
-stacked_dir=$4"/stacked_reproj"
+output_dir=$4
+ingested_dir=$output_dir"/ingested"
+mask_dir=$output_dir"/masked"
+pixres_dir=$output_dir"/resolution"
+reproj_dn_dir=$output_dir"/reproj"
+reproj_pixres_dir=$output_dir"/reproj_pixres"
+stacked_dir=$output_dir"/stacked_reproj"
 
 mkdir -p $ingested_dir
 mkdir -p $mask_dir

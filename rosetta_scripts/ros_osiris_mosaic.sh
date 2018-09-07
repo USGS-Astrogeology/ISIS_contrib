@@ -39,6 +39,3 @@ for basename in `cat $1`; do
     handmos from=$stacked_dir/$basename.cub mosaic=$output_mosaic priority=average >& /dev/null
   fi
 done
-
-echo ""
-echo "---Complete---"
