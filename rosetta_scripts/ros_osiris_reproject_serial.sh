@@ -27,7 +27,7 @@ numFiles=`wc -l < $1`
 echo "Processing $numFiles files."
 echo ""
 
-if [$ISISROOT == ""]; then
+if [ -z "$ISISROOT"]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi

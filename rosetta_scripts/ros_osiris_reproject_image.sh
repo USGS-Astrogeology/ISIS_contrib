@@ -5,7 +5,7 @@
 #
 # Parameters:
 #
-#  $1 - The basenames of the image to reproject without a path or file extension
+#  $1 - The basename of the image to reproject without a path or file extension
 #
 #  $2 - The image whose viewing geometry will be used to reproject
 #
@@ -18,11 +18,12 @@
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
 
-if [$ISISROOT == ""]; then
+if [ -z "$ISISROOT"]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi
 
+basename=$1
 raw_dir=$3
 output_dir=$4
 ingested_dir=$output_dir"/ingested"

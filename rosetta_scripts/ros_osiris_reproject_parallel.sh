@@ -28,7 +28,7 @@ numFiles=`wc -l < $1`
 echo "Processing $numFiles files."
 echo ""
 
-if [$ISISROOT == ""]; then
+if [ -z "$ISISROOT" ]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi
@@ -41,7 +41,7 @@ log_dir=$output_dir"/LOGS"
 
 mkdir -p $ingested_dir
 mkdir -p $stacked_dir
-
+mkdir -p $log_dir
 
 # ingest and spiceinit the reference perspective image
 rososiris2isis from=$raw_dir/$2.IMG to=$ingested_dir/$2.cub >& /dev/null
@@ -55,20 +55,21 @@ slurm_job_names=""
 # reproject each image
 for basename in `cat $1`; do
   job_id=$(sbatch --partition=shortall --time=01:00:00 --mem=1000 \
-  --job-name=ROS_Projection --output=LOGS/$basename.log \
-  --workdir=$output_dir \
-  ./ros_osiris_reproject_image.sh $basename $ingested_dir/$2.cub $raw_dir $output_dir)
+  --job-name=ROS_Projection --output=LOGS/$basename.log --workdir=$output_dir \
+  ros_osiris_reproject_image.sh $basename $ingested_dir/$2.cub $raw_dir $output_dir)
 
-  slurm_job_names="$slurm_job_names:$job_id"
+# parameter substitution magic, job_id is "Submitted batch job ######" this
+# extracts the final word
+  slurm_job_names="$slurm_job_names:${job_id##* }"
 done
 
 # mosaic all of the images
 # here we use the big list of slurm jobs to make sure the mosaic happens
 # after everything is reprojected
-sbatch sbatch --partition=longall --time=01:00:00 --mem=1000 \
+sbatch --partition=longall --time=01:00:00 --mem=1000 \
 --job-name=ROS_Mosaic --output=LOGS/mosaic.log \
 --workdir=$output_dir  --dependency=afterok$slurm_job_names \
-./ros_osiris_mosaic $1 $output_dir mosaic.cub
+ros_osiris_mosaic.sh $1 $output_dir mosaic.cub
 
 echo ""
 echo "---Complete---"

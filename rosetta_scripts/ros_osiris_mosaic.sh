@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # Script to mosaic a set of Rosetta OSIRIS images after they have been reprojected.
 # The ISISROOT variable must be set.
@@ -25,6 +26,11 @@ output_dir=$2
 output_mosaic=$output_dir/$3
 
 stacked_dir=$output_dir"/stacked_reproj"
+
+if [ -z "$ISISROOT"]; then
+  echo "Environment variable ISISROOT must be set before running this script."
+  exit
+fi
 
 for basename in `cat $1`; do
   echo "Mosaicing image: $basename"
