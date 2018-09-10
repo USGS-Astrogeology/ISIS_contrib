@@ -15,15 +15,25 @@
 #
 #  $3 - The directory where the raw .IMG and .LBL files from the previous parameters are located
 #
-#  $4 - The directory where all files will be output
+#  $4 - The directory where the perspective image is located
 #
-# Usage: ros_osiris_reproject_serial basenames.lis perspective_image /path/to/raw/data /working/directory
+#  $5 - The directory where all files will be output
+#
+# Usage: ros_osiris_reproject_serial basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
 
+input_images=$1
+perspective_image=$2
+raw_dir=$3
+perspective_dir=$4
+output_dir=$5
+ingested_dir=$output_dir"/ingested"
+stacked_dir=$output_dir"/stacked_reproj"
 
-numFiles=`wc -l < $1`
+
+numFiles=`wc -l < $input_images`
 echo "Processing $numFiles files."
 echo ""
 
@@ -32,32 +42,27 @@ if [ -z "$ISISROOT"]; then
   exit
 fi
 
-raw_dir=$3
-output_dir=$4
-ingested_dir=$output_dir"/ingested"
-stacked_dir=$output_dir"/stacked_reproj"
-
 mkdir -p $ingested_dir
 mkdir -p $stacked_dir
 
 
 # ingest and spiceinit the reference perspective image
-rososiris2isis from=$raw_dir/$2.IMG to=$ingested_dir/$2.cub >& /dev/null
-spiceinit from=$ingested_dir/$2.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet >& /dev/null
-echo "Reference cube $2.cub now set up."
+rososiris2isis from=$perspective_dir/$perspective_image.IMG to=$ingested_dir/$perspective_image.cub >& /dev/null
+spiceinit from=$ingested_dir/$perspective_image.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet >& /dev/null
+echo "Reference cube $perspective_image.cub now set up."
 echo ""
 
 # reproject each image
-for basename in `cat $1`; do
+for basename in `cat $input_images`; do
 
   echo "Processing image: $basename"
 
-  ./ros_osiris_reproject_image.sh $basename $ingested_dir/$2.cub $raw_dir $output_dir
+  ./ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir
 
 done
 
 # mosaic all of the images
-./ros_osiris_mosaic $1 $output_dir mosaic.cub
+./ros_osiris_mosaic $input_images $output_dir mosaic.cub
 
 echo ""
 echo "---Complete---"

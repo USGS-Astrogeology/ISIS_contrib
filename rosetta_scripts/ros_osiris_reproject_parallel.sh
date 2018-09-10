@@ -25,16 +25,6 @@
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
 
-
-numFiles=`wc -l < $1`
-echo "Processing $numFiles files."
-echo ""
-
-if [ -z "$ISISROOT" ]; then
-  echo "Environment variable ISISROOT must be set before running this script."
-  exit
-fi
-
 input_images=$1
 perspective_image=$2
 raw_dir=$3
@@ -43,6 +33,15 @@ output_dir=$5
 ingested_dir=$output_dir"/ingested"
 stacked_dir=$output_dir"/stacked_reproj"
 log_dir=$output_dir"/LOGS"
+
+numFiles=`wc -l < $input_images`
+echo "Processing $numFiles files."
+echo ""
+
+if [ -z "$ISISROOT" ]; then
+  echo "Environment variable ISISROOT must be set before running this script."
+  exit
+fi
 
 mkdir -p $ingested_dir
 mkdir -p $stacked_dir
