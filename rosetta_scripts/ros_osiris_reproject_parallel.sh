@@ -12,7 +12,7 @@
 #                 N20140801T132117651ID30F27
 #                 N20140801T144423558ID30F27
 #
-#  $2 - The image whose viewing geometry will be used to reproject, no file extension
+#  $2 - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
 #
 #  $3 - The directory where the raw .IMG and .LBL files from the previous parameters are located
 #
@@ -22,7 +22,7 @@
 #
 #  $6 - minimum mask threshold (e.g. 0.0001)
 #
-# Usage: ros_osiris_reproject_parallel basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory
+# Usage: ros_osiris_reproject_parallel basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory filter_threshold
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
