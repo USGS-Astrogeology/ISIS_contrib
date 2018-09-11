@@ -11,7 +11,7 @@
 #                 N20140801T132117651ID30F27
 #                 N20140801T144423558ID30F27
 #
-#  $2 - The image whose viewing geometry will be used to reproject, no file extension
+#  $2 - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
 #
 #  $3 - The directory where the raw .IMG and .LBL files from the previous parameters are located
 #
@@ -19,7 +19,9 @@
 #
 #  $5 - The directory where all files will be output
 #
-# Usage: ros_osiris_reproject_serial basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory
+#  $6 - minimum mask threshold (e.g. 0.0001)
+#
+# Usage: ros_osiris_reproject_serial basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory filter_threshold
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
@@ -29,6 +31,7 @@ perspective_image=$2
 raw_dir=$3
 perspective_dir=$4
 output_dir=$5
+minimum_mask=$6
 ingested_dir=$output_dir"/ingested"
 stacked_dir=$output_dir"/stacked_reproj"
 
@@ -57,7 +60,7 @@ for basename in `cat $input_images`; do
 
   echo "Processing image: $basename"
 
-  ./ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir
+  ./ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask
 
 done
 

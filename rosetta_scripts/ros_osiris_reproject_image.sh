@@ -7,13 +7,15 @@
 #
 #  $1 - The basename of the image to reproject without a path or file extension
 #
-#  $2 - The image whose viewing geometry will be used to reproject
+#  $2 - Perspective image: The image whose viewing geometry will be used to reproject
 #
 #  $3 - The directory where the raw .IMG and .LBL file for the input image are located
 #
 #  $4 - The directory where all files will be output
 #
-# Usage: ros_osiris_reproject_image basename perspective_image.cub /path/to/raw/data/ /working/directory
+#  $5 - Minimum mask threshold (e.g. 0.0001)
+#
+# Usage: ros_osiris_reproject_image basename perspective_image.cub /path/to/raw/data/ /working/directory filter_threshold
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
@@ -26,6 +28,7 @@ fi
 basename=$1
 raw_dir=$3
 output_dir=$4
+minimum_mask=$5
 ingested_dir=$output_dir"/ingested"
 mask_dir=$output_dir"/masked"
 pixres_dir=$output_dir"/resolution"
@@ -50,7 +53,7 @@ spiceinit from=$ingested_dir/$basename.cub shape=user model=$ISIS3DATA/rosetta/k
 echo "2/7---Spiceinit complete."
 
 # Mask the image
-mask minimum=0.0001 from=$ingested_dir/$basename.cub to=$mask_dir/$basename.cub
+mask minimum=$minimum_mask from=$ingested_dir/$basename.cub to=$mask_dir/$basename.cub
 
 # compute the pixel resolution
 camdev dn=no planetocentriclatitude=no pixelresolution=yes from=$mask_dir/$basename.cub to=$pixres_dir/$basename.cub
