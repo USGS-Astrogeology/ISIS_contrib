@@ -20,6 +20,8 @@
 #
 #  $5 - The directory where all files will be output
 #
+#  $6 - minimum mask threshold (e.g. 0.0001)
+#
 # Usage: ros_osiris_reproject_parallel basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
@@ -30,6 +32,7 @@ perspective_image=$2
 raw_dir=$3
 perspective_dir=$4
 output_dir=$5
+minimum_mask=$6
 ingested_dir=$output_dir"/ingested"
 stacked_dir=$output_dir"/stacked_reproj"
 log_dir=$output_dir"/LOGS"
@@ -60,7 +63,7 @@ slurm_job_names=""
 for basename in `cat $input_images`; do
   job_id=$(sbatch --partition=shortall --time=01:00:00 --mem=1000 \
   --job-name=ROS_Projection --output=LOGS/$basename.log --workdir=$output_dir \
-  ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir)
+  ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask)
 
 # parameter substitution magic, job_id is "Submitted batch job ######" this
 # extracts the final word
