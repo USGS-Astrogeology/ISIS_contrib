@@ -7,7 +7,7 @@
 #
 #  $1 - The basename of the image to reproject without a path or file extension
 #
-#  $2 - The image whose viewing geometry will be used to reproject
+#  $2 - Perspective image: The image whose viewing geometry will be used to reproject
 #
 #  $3 - The directory where the raw .IMG and .LBL file for the input image are located
 #
@@ -15,7 +15,7 @@
 #
 #  $5 - Minimum mask threshold (e.g. 0.0001)
 #
-# Usage: ros_osiris_reproject_image basename perspective_image.cub /path/to/raw/data/ /working/directory
+# Usage: ros_osiris_reproject_image basename perspective_image.cub /path/to/raw/data/ /working/directory filter_threshold
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
