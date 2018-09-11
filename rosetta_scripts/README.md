@@ -68,4 +68,4 @@ The final step is to take all of the reprojected images and mosaic them into a
 single composite. Normally this is done using [mapmos](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/mapmos/mapmos.html)
 or [automos](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/automos/automos.html),
 but because the imagery is unprojected, the scripts use the
-[handmos] (https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/handmos/handmos.html) application
+[handmos](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/handmos/handmos.html) application
