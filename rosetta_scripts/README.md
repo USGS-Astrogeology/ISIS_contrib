@@ -60,6 +60,8 @@ image, except for the shapemodel. Because CG-67P is so irregular, a NAIF DSK
 shapemodel must be used to get accurate intersections in the camera models.
 So, all of the images use the ROS_CG_M004_OSPGDLR_U_V1.bds shapemodel.
 
+![](http://blogs.esa.int/rosetta/files/2015/08/screenshot_ESA_NavCam_shape_model.png)
+
 ## Masking
 
 OSIRIS NAC imagery tends to have lots of shadows that will interfere with the
