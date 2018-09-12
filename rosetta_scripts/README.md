@@ -38,10 +38,19 @@ each of them.
 
 # The projection process
 
+## Perspective Image
+
+The perspective image is the image whose viewing geometry will be used for the
+reprojection process.
+
+![](images/N20140806T051914575ID30F22_reduced.png)
+
 ## Ingestion
 
 Before images can be processed, they must be ingested into ISIS3 cubes.
 This is done using the [rososiris2isis](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/rososiris2isis/rososiris2isis.html) application.
+
+![](images/N20140821T154217261ID30F27_reduced.png)
 
 ## Attaching SPICE data
 
@@ -56,11 +65,15 @@ So, all of the images use the ROS_CG_M004_OSPGDLR_U_V1.bds shapemodel.
 OSIRIS NAC imagery tends to have lots of shadows that will interfere with the
 mosaicing process, so we apply a minimum threshold mask to remove them.
 
+![](images/N20140821T154217261ID30F27_mask_reduced.png)
+
 ## Reprojection
 
 The main processing step is to reproject the input imagery into the perspective
 image's viewing geometry. This is done using the
 [cam2cam](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/cam2cam/cam2cam.html) application.
+
+![](images/N20140821T154217261ID30F27_reproj_reduced.png)
 
 ##  Mosaicing
 
@@ -69,3 +82,5 @@ single composite. Normally this is done using [mapmos](https://isis.astrogeology
 or [automos](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/automos/automos.html),
 but because the imagery is unprojected, the scripts use the
 [handmos](https://isis.astrogeology.usgs.gov/Application/presentation/Tabbed/handmos/handmos.html) application
+
+![](images/mosaic_average_Reduce.png)
