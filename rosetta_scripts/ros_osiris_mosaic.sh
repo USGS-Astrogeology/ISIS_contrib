@@ -27,7 +27,7 @@ output_mosaic=$output_dir/$3
 
 stacked_dir=$output_dir"/stacked_reproj"
 
-if [ -z "$ISISROOT"]; then
+if [ -z ${ISISROOT+x} ]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi
