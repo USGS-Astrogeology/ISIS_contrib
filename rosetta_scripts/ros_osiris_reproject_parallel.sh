@@ -26,22 +26,25 @@
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
-
+cwd=$PWD
 input_images=$1
 perspective_image=$2
-raw_dir=$3
+raw_dir=$cwd/$3
 perspective_dir=$4
-output_dir=$5
+output_dir=$cwd/$5
 minimum_mask=$6
 ingested_dir=$output_dir"/ingested"
 stacked_dir=$output_dir"/stacked_reproj"
 log_dir=$output_dir"/LOGS"
 
+
 numFiles=`wc -l < $input_images`
 echo "Processing $numFiles files."
 echo ""
+echo "cwd: $cwd"
+echo ""
 
-if [ -z "$ISISROOT" ]; then
+if [ -z ${ISISROOT+x} ]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi
@@ -49,10 +52,11 @@ fi
 mkdir -p $ingested_dir
 mkdir -p $stacked_dir
 mkdir -p $log_dir
+cp IsisPreferences_Bullet $output_dir
 
 # ingest and spiceinit the reference perspective image
-rososiris2isis from=$perspective_dir/$perspective_image.IMG to=$ingested_dir/$perspective_image.cub >& /dev/null
-spiceinit from=$ingested_dir/$perspective_image.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet >& /dev/null
+rososiris2isis from=$perspective_dir/$perspective_image.IMG to=$ingested_dir/$perspective_image.cub 
+spiceinit from=$ingested_dir/$perspective_image.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet 
 echo "Reference cube $perspective_image.cub now set up."
 echo ""
 
@@ -60,7 +64,7 @@ echo ""
 slurm_job_names=""
 
 # reproject each image
-for basename in `cat $input_images`; do
+for basename in `cat $cwd/$input_images`; do
   job_id=$(sbatch --partition=shortall --time=01:00:00 --mem=1000 \
   --job-name=ROS_Projection --output=LOGS/$basename.log --workdir=$output_dir \
   ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask)
@@ -73,10 +77,11 @@ done
 # mosaic all of the images
 # here we use the big list of slurm jobs to make sure the mosaic happens
 # after everything is reprojected
+echo ros_osiris_mosaic.sh $input_images $output_dir mosaic.cub
 sbatch --partition=longall --time=01:00:00 --mem=1000 \
 --job-name=ROS_Mosaic --output=LOGS/mosaic.log \
 --workdir=$output_dir  --dependency=afterok$slurm_job_names \
-ros_osiris_mosaic.sh $input_images $output_dir mosaic.cub
+ros_osiris_mosaic.sh $cwd/$input_images $output_dir mosaic.cub
 
 echo ""
 echo "---Complete---"
