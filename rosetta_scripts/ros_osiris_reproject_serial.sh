@@ -40,7 +40,7 @@ numFiles=`wc -l < $input_images`
 echo "Processing $numFiles files."
 echo ""
 
-if [ -z "$ISISROOT"]; then
+if [ -z ${ISISROOT+x} ]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi
@@ -50,14 +50,14 @@ mkdir -p $stacked_dir
 
 
 # ingest and spiceinit the reference perspective image
-rososiris2isis from=$perspective_dir/$perspective_image.IMG to=$ingested_dir/$perspective_image.cub >& /dev/null
-spiceinit from=$ingested_dir/$perspective_image.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet >& /dev/null
+rososiris2isis from=$perspective_dir/$perspective_image.IMG to=$ingested_dir/$perspective_image.cub 
+spiceinit from=$ingested_dir/$perspective_image.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet 
 echo "Reference cube $perspective_image.cub now set up."
 echo ""
 
 # reproject each image
 for basename in `cat $input_images`; do
-
+  echo ""
   echo "Processing image: $basename"
 
   ./ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask
@@ -65,7 +65,8 @@ for basename in `cat $input_images`; do
 done
 
 # mosaic all of the images
-./ros_osiris_mosaic $input_images $output_dir mosaic.cub
+echo ./ros_osiris_mosaic.sh $input_images $output_dir mosaic.cub
+./ros_osiris_mosaic.sh $input_images $output_dir mosaic.cub
 
 echo ""
 echo "---Complete---"
