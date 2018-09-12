@@ -20,11 +20,12 @@
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
 
-if [ -z "$ISISROOT"]; then
+if [ -z ${ISISROOT+x} ]; then
   echo "Environment variable ISISROOT must be set before running this script."
   exit
 fi
 
+cwd=$PWD
 basename=$1
 raw_dir=$3
 output_dir=$4
