@@ -5,38 +5,70 @@
 #
 # Parameters:
 #
-#  $1 - The list of image basenames to reproject. Each image should be on its own line without
+#  l - The list of image basenames to reproject. Each image should be on its own line without
 #       file extension or path (ie. just basename). For example, the contents could be as follows:
 #                 N20140801T115049599ID30F27
 #                 N20140801T132117651ID30F27
 #                 N20140801T144423558ID30F27
 #
-#  $2 - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
+#  p - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
 #
-#  $3 - The directory where the raw .IMG and .LBL files from the previous parameters are located
+#  i - The directory where the raw .IMG and .LBL files from the previous parameters are located
 #
-#  $4 - The directory where the perspective image is located
+#  d - The directory where the perspective image is located
 #
-#  $5 - The directory where all files will be output
+#  o - The directory where all files will be output
 #
-#  $6 - minimum mask threshold (e.g. 0.0001)
+#  m - minimum mask threshold (e.g. 0.0001)
 #
-# Usage: ros_osiris_reproject_serial basenames.lis perspective_image /path/to/raw/data /path/to/perspective/data /working/directory filter_threshold
+# Usage: ros_osiris_reproject_serial -l basenames.lis -p perspective_image -i /path/to/raw/data -d /path/to/perspective/data -o /working/directory -m filter_threshold
+#
+# Example: ./ros_osiris_reproject_serial.sh -l batchList_short.txt -p N20140816T165914570ID30F22 -i ./images -d ./perspectives -o ./output -m 0.0001
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
 
-input_images=$1
-perspective_image=$2
-raw_dir=$3
-perspective_dir=$4
-output_dir=$5
-minimum_mask=$6
+
+while getopts 'l:p:i:d:o:m:' OPTION; do
+  case "$OPTION" in
+    l)
+      input_images="$OPTARG"
+      echo "File containing lists of images to reproject: $input_images"
+      ;;
+    p)
+      perspective_image="$OPTARG"
+      echo "Perspective image: $perspective_image"
+      ;;
+    i)
+      raw_dir="$OPTARG"
+      echo "Directory where raw images are located: $raw_dir"
+      ;;
+    d)
+      perspective_dir="$OPTARG"
+      echo "Perspective directory: $perspective_dir"
+      ;;
+    o)
+      output_dir="$OPTARG"
+      echo "Output directory: $output_dir"
+      ;;
+    m)
+      minimum_mask="$OPTARG"
+      echo "Minimum mask: $minimum_mask"
+      ;;
+    ?)
+      #echo "Invalid args: $OPTARG" >&2
+      echo "script usage: $(basename $0) [-l filelist] [-p perspective_image] [-i images_dir] [-d perspective_dir] [-o output_dir] [-m minimum_mask]" >&2
+      exit 1
+      ;;
+  esac
+done
+
 ingested_dir=$output_dir"/ingested"
 stacked_dir=$output_dir"/stacked_reproj"
 
 
 numFiles=`wc -l < $input_images`
+echo ""
 echo "Processing $numFiles files."
 echo ""
 
