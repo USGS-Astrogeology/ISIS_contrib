@@ -29,7 +29,7 @@ def get_key(cube, name, object=None, group=None):
     if group:
         command.append('grpname={}'.format(group))
     result = subprocess.run(command, stdout=subprocess.PIPE, check=True)
-    return result.stdout
+    return result.stdout.strip().decode()
 
 def get_table(cube, table_name, csv):
     command = [
@@ -56,16 +56,18 @@ def create_rotation_label(file, frame, time, description=None):
     label += '\nCkTableOriginalSize = 1'
     label += '\nFrameTypeCode       = 3'
     if description:
-        label += '\nDescription         = {}'.format(description)
+        label += '\nDescription         = "{}"'.format(description)
+    label += '\n\nEnd'
     with open(file, 'w') as out:
         out.write(label)
 
 def create_position_label(file, time, description=None):
-    label += '\nSpkTableStartTime    = {}'.format(time)
+    label =    'SpkTableStartTime    = {}'.format(time)
     label += '\nSpkTableEndTime      = {}'.format(time)
     label += '\nSpkTableOriginalSize = 1'
     if description:
-        label += '\nDescription          = {}'.format(description)
+        label += '\nDescription          = "{}"'.format(description)
+    label += '\n\nEnd'
     with open(file, 'w') as out:
         out.write(label)
 
@@ -113,6 +115,10 @@ subprocess.run(['cp', template_image, output_image])
 
 print('Prepping viewing geometry to be attached to {}'.format(output_image))
 
+# We don't want any velocities so just take the quaternions and position
+rotation_fields = ['J2000Q0', 'J2000Q1', 'J2000Q2', 'J2000Q3', 'ET']
+position_fields = ['J2000X', 'J2000Y', 'J2000Z', 'ET']
+
 out_rotation = pd.read_csv(inst_rotation_csv)
 row = out_rotation.iloc[0]
 quat_array = quaternion.as_float_array(rotation)
@@ -120,14 +126,14 @@ row['J2000Q0'] = quat_array[3]
 row['J2000Q1'] = -quat_array[0]
 row['J2000Q2'] = -quat_array[1]
 row['J2000Q3'] = -quat_array[2]
-out_rotation.to_csv(inst_rotation_csv, index=False)
+out_rotation[rotation_fields].to_csv(inst_rotation_csv, index=False)
 
 out_position = pd.read_csv(inst_position_csv)
 row = out_position.iloc[0]
 row['J2000X'] = position[0]
 row['J2000Y'] = position[1]
 row['J2000Z'] = position[2]
-out_position.to_csv(inst_position_csv, index=False)
+out_position[position_fields].to_csv(inst_position_csv, index=False)
 
 # Write the identity rotation out to the body rotation table so that body_fixed=J2000.
 # This saves a little bit of work because attached spice data is in J2000
@@ -137,7 +143,7 @@ row['J2000Q0'] = 0
 row['J2000Q1'] = -1
 row['J2000Q2'] = 0
 row['J2000Q3'] = 0
-out_position.to_csv(body_rotation_csv, index=False)
+body_rotation[rotation_fields].to_csv(body_rotation_csv, index=False)
 
 # TODO write these out using an actual pvl library
 body_frame = get_key(template_image, 'BODY_FRAME_CODE', object='NaifKeywords')
@@ -145,7 +151,7 @@ camera_frame = get_key(template_image, 'NaifFrameCode', group='Kernels')
 body_rotation_label = image_basename + '_body_rotation.pvl'
 inst_rotation_label = image_basename + '_instrument_rotation.pvl'
 inst_position_label = image_basename + '_instrument_position.pvl'
-temp_files += [inst_rotation_label, body_rotation_label]
+temp_files += [inst_rotation_label, body_rotation_label, inst_position_label]
 create_rotation_label(body_rotation_label, body_frame,
                       body_rotation.iloc[0]['ET'],
                       description='created by compute_orientation.py')
