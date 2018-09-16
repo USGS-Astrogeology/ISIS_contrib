@@ -29,7 +29,7 @@ def rotation_between(u, v, fallback=None):
     # try the cross product of the x-axis and u.
     # If they are co-linear use the y-axis.
     elif dot < -1.0 + tolerance:
-        if fallback:
+        if fallback is None:
             axis = fallback
         else:
             axis = np.cross(unit_u, np.array([1,0,0]))
@@ -51,13 +51,13 @@ def compute_rotation(ground_point):
 
     # Next compute the rotation that aligns North up, the rotation that takes
     # the rotated +X to the component of +Z that is orthogonal the look vector.
-    rotated_x = quaternion.as_rotation_matrix(look_rotation) * x_plus)
+    rotated_x = quaternion.as_rotation_matrix(look_rotation) @ x_plus
     north_up = z_plus - np.dot(z_plus, look_vector) * look_vector
     # We need to make sure that if the rotated x and north up vector are
     # opposites, then we use a 180 rotation about the look vector so as
     # to not screw it up
     north_rotation = rotation_between(rotated_x, north_up, look_vector)
-    return north_rotation * look_vector
+    return north_rotation * look_rotation
 
 # TODO replace getkey calls with PVL library
 def get_key(cube, name, object=None, group=None):
