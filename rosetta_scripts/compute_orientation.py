@@ -14,7 +14,10 @@ def compute_position(ground_point, distance):
     return bf_position
 
 def rotation_between(u, v, fallback=None):
-    tolerance=1e-10
+    tolerance = 1e-10
+
+    if np.linalg.norm(u) < tolerance or np.linalg.norm(v) < tolerance:
+        return np.quaternion(1,0,0,0)
 
     unit_u = u / np.linalg.norm(u)
     unit_v = v / np.linalg.norm(v)
@@ -29,7 +32,7 @@ def rotation_between(u, v, fallback=None):
     # try the cross product of the x-axis and u.
     # If they are co-linear use the y-axis.
     elif dot < -1.0 + tolerance:
-        if fallback is None:
+        if fallback is not None:
             axis = fallback
         else:
             axis = np.cross(unit_u, np.array([1,0,0]))
