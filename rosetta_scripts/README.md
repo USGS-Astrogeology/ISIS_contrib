@@ -6,7 +6,12 @@ the comet is, the standard map projection process is not applicable.
 
 ## User Scripts
 
-These are the two main scripts for projecting Rosetta OSIRIS imagery.
+These are the three main scripts for projecting Rosetta OSIRIS imagery.
+
+### compute_orientation
+
+  This script generates an artificial perspective image for use with the other
+  reprojection scripts.
 
 ### ros_osiris_reproject_serial
 
