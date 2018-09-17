@@ -6,13 +6,13 @@
 #
 # Parameters:
 #
-#  l - The list of image basenames to reproject. Each image should be on its own line without
+#  (Required) l - The list of image basenames to reproject. Each image should be on its own line without
 #       file extension or path (ie. just basename). For example, the contents could be as follows:
 #                 N20140801T115049599ID30F27
 #                 N20140801T132117651ID30F27
 #                 N20140801T144423558ID30F27
 #
-#  p - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
+#  (Required) p - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
 #
 #  i - The directory where the raw .IMG and .LBL files from the previous parameters are located
 #
@@ -34,26 +34,31 @@ cwd=$PWD
 echo "cwd: $cwd"
 echo ""
 
+got_input_list=0
+got_perspective_image=0
+
 while getopts 'l:p:i:d:o:m:' OPTION; do
   case "$OPTION" in
     l)
       input_images="$OPTARG"
       echo "File containing lists of images to reproject: $input_images"
+      got_input_list=1
       ;;
     p)
       perspective_image="$OPTARG"
       echo "Perspective image: $perspective_image"
+      got_perspective_image=1
       ;;
     i)
-      raw_dir="$cwd/$OPTARG"
+      raw_dir=$(readlink -f "$OPTARG")
       echo "Directory where raw images are located: $raw_dir"
       ;;
     d)
-      perspective_dir="$OPTARG"
+      perspective_dir=$(readlink -f "$OPTARG") #"$cwd/$OPTARG"
       echo "Perspective directory: $perspective_dir"
       ;;
     o)
-      output_dir="$cwd/$OPTARG"
+      output_dir=$(readlink -f "$OPTARG") #"$cwd/$OPTARG"
       echo "Output directory: $output_dir"
       ;;
     m)
@@ -68,17 +73,18 @@ while getopts 'l:p:i:d:o:m:' OPTION; do
   esac
 done
 
-#input_images=$1
-#perspective_image=$2
-#raw_dir=$cwd/$3
-#perspective_dir=$4
-#output_dir=$cwd/$5
-#minimum_mask=$6
+if [ $got_input_list -eq 0 ] || [ $got_perspective_image -eq 0 ]; then
+  echo ""
+  echo "Required arguments missing: you need to supply both an input file list and a perspective image name."
+  exit 2
+fi
 
 ingested_dir=$output_dir"/ingested"
 stacked_dir=$output_dir"/stacked_reproj"
 log_dir=$output_dir"/LOGS"
-
+echo "Ingested directory: $ingested_dir"
+echo "Stacked image directory: $stacked_dir"
+echo "Log directory: $log_dir"
 
 numFiles=`wc -l < $input_images`
 echo ""
@@ -107,6 +113,8 @@ slurm_job_names=""
 
 # reproject each image
 for basename in `cat $cwd/$input_images`; do
+  #$basename=$cwd/input/$basename
+  echo "Reprojecting: $basename"
   job_id=$(sbatch --partition=shortall --time=01:00:00 --mem=1000 \
   --job-name=ROS_Projection --output=LOGS/$basename.log --workdir=$output_dir \
   ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask)
