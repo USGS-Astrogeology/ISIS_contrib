@@ -13,6 +13,7 @@ def compute_position(ground_point, distance):
     bf_position = np.array(distance / np.linalg.norm(ground_point)) * ground_point
     return bf_position
 
+# Compute rotation from u to v
 def rotation_between(u, v, fallback=None):
     tolerance = 1e-10
 
@@ -50,7 +51,7 @@ def compute_rotation(ground_point):
     look_vector = -ground_point / np.linalg.norm(ground_point)
 
     # First compute the rotation that takes +Z to the look vector
-    look_rotation = rotation_between(z_plus, -look_vector)
+    look_rotation = rotation_between(z_plus, look_vector)
 
     # Next compute the rotation that aligns North up, the rotation that takes
     # the rotated +X to the component of +Z that is orthogonal the look vector.
@@ -166,10 +167,11 @@ position_fields = ['J2000X', 'J2000Y', 'J2000Z', 'ET']
 out_rotation = pd.read_csv(inst_rotation_csv)
 row = out_rotation.iloc[0]
 quat_array = quaternion.as_float_array(rotation)
-row['J2000Q0'] = quat_array[3]
-row['J2000Q1'] = -quat_array[0]
-row['J2000Q2'] = -quat_array[1]
-row['J2000Q3'] = -quat_array[2]
+quat_array = quat_array/np.linalg.norm(quat_array)
+row['J2000Q0'] = quat_array[0]
+row['J2000Q1'] = -quat_array[1]
+row['J2000Q2'] = -quat_array[2]
+row['J2000Q3'] = -quat_array[3]
 out_rotation[rotation_fields].to_csv(inst_rotation_csv, index=False)
 
 out_position = pd.read_csv(inst_position_csv)
@@ -183,8 +185,8 @@ out_position[position_fields].to_csv(inst_position_csv, index=False)
 # This saves a little bit of work because attached spice data is in J2000
 body_rotation = pd.read_csv(body_rotation_csv)
 row = body_rotation.iloc[0]
-row['J2000Q0'] = 0
-row['J2000Q1'] = -1
+row['J2000Q0'] = 1
+row['J2000Q1'] = 0
 row['J2000Q2'] = 0
 row['J2000Q3'] = 0
 body_rotation[rotation_fields].to_csv(body_rotation_csv, index=False)

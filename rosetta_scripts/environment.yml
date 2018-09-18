@@ -1,0 +1,9 @@
+name: jupyterdemo
+channels:
+- defaults
+- conda-forge
+dependencies:
+- numpy
+- pandas
+- quaternion
+- numba
