@@ -31,6 +31,8 @@
 got_input_list=0
 got_perspective_image=0
 
+image_count=0
+
 while getopts 'l:p:i:d:o:m:' OPTION; do
   case "$OPTION" in
     l)
@@ -99,8 +101,10 @@ echo ""
 
 # reproject each image
 for basename in `cat $input_images`; do
+  image_count=`expr $image_count + 1`
   echo ""
-  echo "Processing image: $basename"
+  echo ""
+  echo "Processing image $image_count/$numFiles: $basename"
 
   ./ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask
 
