@@ -14,7 +14,7 @@ These are the three main scripts for projecting Rosetta OSIRIS imagery.
   reprojection scripts. Unlike the rest of the scripts, this is a python script.
   It's intended to be used within a python environment defined by the
   environment.yml file. For this reason, it needs to be called using
-  `python compute_orientation <args>`.
+  `python compute_orientation.py <args>`.
 
 ### ros_osiris_reproject_serial
 
