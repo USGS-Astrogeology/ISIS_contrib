@@ -1,10 +1,17 @@
 """Python script to compute the exterior orientation for a NADIR image
 that views a specified ground point with North up.
 
-This script requires the following packages: numpy, pandas, quaternion, numba
+This script takes a ground point in X, Y, Z body fixed coordinates and an
+input template image. It then, adjusts the viewing the geometry of the template
+image so that the ground point is in the center of the image and North is up
+in the image. By default, the viewing positon is set to a reasonable distance
+from the body, but this can be adjusted by the distance argument.
+
+This script does not use a hash bang so it must be called via
+`python compute_orientation.py <args>`.
 """
 
-
+from __future__ import print_function, division
 import numpy as np
 import pandas as pd
 import quaternion, argparse, os, subprocess
@@ -124,10 +131,10 @@ parser.add_argument('Output', help='The filename of the output cube')
 parser.add_argument('X', help='The X coordinate of the ground point', type=float)
 parser.add_argument('Y', help='The Y coordinate of the ground point', type=float)
 parser.add_argument('Z', help='The Z coordinate of the ground point', type=float)
-parser.add_argument('--distance',
+parser.add_argument('-d', '--distance',
                     help='The distance from observer to the center of the body in km',
                     type=float, default=110)
-parser.add_argument('--clean',
+parser.add_argument('-c', '--clean',
                     help='Remove temporary files on successful execution.',
                     action='store_true')
 
