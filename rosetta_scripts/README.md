@@ -8,7 +8,7 @@ the comet is, the standard map projection process is not applicable.
 
 These are the three main scripts for projecting Rosetta OSIRIS imagery.
 
-### compute_orientation
+### compute_orientation.py
 
   This script generates an artificial perspective image for use with the other
   reprojection scripts. Unlike the rest of the scripts, this is a python script.
@@ -16,11 +16,11 @@ These are the three main scripts for projecting Rosetta OSIRIS imagery.
   environment.yml file. For this reason, it needs to be called using
   `python compute_orientation.py <args>`.
 
-### ros_osiris_reproject_serial
+### ros_osiris_reproject_serial.sh
 
   This script projects a list of images one at a time and then mosaics them.
 
-### ros_osiris_reproject_parallel
+### ros_osiris_reproject_parallel.sh
 
   This script projects a list of images in parallel by dispatching to a cluster.
   It is setup for use with the Nebula cluster at the USGS Astrogeology Science
@@ -32,12 +32,12 @@ These are the three main scripts for projecting Rosetta OSIRIS imagery.
 These scripts are used by other scripts. However, they can be run by
 themselves, but the main user scripts are generally more user friendly.
 
-### ros_osiris_reproject_image
+### ros_osiris_reproject_image.sh
 
   This script takes a single image from ingestion to projection into the new
   viewing geometry.
 
-### ros_osiris_mosaic
+### ros_osiris_mosaic.sh
 
   This script mosaics a set of projected images into a single averaged image.
 
