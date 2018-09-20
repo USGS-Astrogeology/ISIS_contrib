@@ -1,4 +1,5 @@
-"""Python script to compute the exterior orientation for a NADIR image
+"""
+Python script to compute the exterior orientation for a NADIR image
 that views a specified ground point with North up.
 
 This script requires the following packages: numpy, pandas, quaternion, numba
@@ -7,114 +8,7 @@ This script requires the following packages: numpy, pandas, quaternion, numba
 
 import numpy as np
 import pandas as pd
-import quaternion, argparse, os, subprocess
-
-def compute_position(ground_point, distance):
-    bf_position = np.array(distance / np.linalg.norm(ground_point)) * ground_point
-    return bf_position
-
-# Compute rotation from u to v
-def rotation_between(u, v, fallback=None):
-    tolerance = 1e-10
-
-    if np.linalg.norm(u) < tolerance or np.linalg.norm(v) < tolerance:
-        return np.quaternion(1,0,0,0)
-
-    unit_u = u / np.linalg.norm(u)
-    unit_v = v / np.linalg.norm(v)
-
-    dot = np.dot(unit_u,unit_v)
-    # If the vectors are within tolerance of parallel, return identity rotation
-    if dot >  1.0 - tolerance:
-        return np.quaternion(1,0,0,0)
-    # If the vectors are within tolerance of opposite, return a 180 degree rotation
-    # about an arbitrary perpendicular axis.
-    # If no fall back axis is provided,
-    # try the cross product of the x-axis and u.
-    # If they are co-linear use the y-axis.
-    elif dot < -1.0 + tolerance:
-        if fallback is not None:
-            axis = fallback
-        else:
-            axis = np.cross(unit_u, np.array([1,0,0]))
-            if np.linalg.norm(axis) < tolerance:
-                axis = np.cross(unit_u, np.array([0,1,0]))
-        return np.quaternion(0, axis[0], axis[1], axis[2])
-
-    axis = np.cross(unit_u, unit_v)
-    scalar = 1 + dot
-    return np.quaternion(scalar, axis[0], axis[1], axis[2])
-
-def compute_rotation(ground_point):
-    x_plus = np.array([1,0,0])
-    z_plus = np.array([0,0,1])
-    look_vector = -ground_point / np.linalg.norm(ground_point)
-
-    # First compute the rotation that takes +Z to the look vector
-    look_rotation = rotation_between(z_plus, look_vector)
-
-    # Next compute the rotation that aligns North up, the rotation that takes
-    # the rotated +X to the component of +Z that is orthogonal the look vector.
-    rotated_x = quaternion.as_rotation_matrix(look_rotation) @ x_plus
-    north_up = z_plus - np.dot(z_plus, look_vector) * look_vector
-    # We need to make sure that if the rotated x and north up vector are
-    # opposites, then we use a 180 rotation about the look vector so as
-    # to not screw it up
-    north_rotation = rotation_between(rotated_x, north_up, look_vector)
-    return north_rotation * look_rotation
-
-# TODO replace getkey calls with PVL library
-def get_key(cube, name, object=None, group=None):
-    command = [
-            'getkey',
-            'from={}'.format(cube),
-            'keyword={}'.format(name)]
-    if object:
-        command.append('objname={}'.format(object))
-    if group:
-        command.append('grpname={}'.format(group))
-    result = subprocess.run(command, stdout=subprocess.PIPE, check=True)
-    return result.stdout.strip().decode()
-
-def get_table(cube, table_name, csv):
-    command = [
-            'tabledump',
-            'from={}'.format(cube),
-            'name={}'.format(table_name),
-            'to={}'.format(csv)]
-    subprocess.run(command, check=True)
-
-def attach_table(cube, csv, table_name, label=None):
-    command = [
-            'csv2table',
-            'to={}'.format(cube),
-            'csv={}'.format(csv),
-            'tablename={}'.format(table_name)]
-    if label:
-        command.append('label={}'.format(label))
-    subprocess.run(command, check=True)
-
-def create_rotation_label(file, frame, time, description=None):
-    label =    'TimeDependentFrames = ({}, 1)'.format(frame)
-    label += '\nCkTableStartTime    = {}'.format(time)
-    label += '\nCkTableEndTime      = {}'.format(time)
-    label += '\nCkTableOriginalSize = 1'
-    label += '\nFrameTypeCode       = 3'
-    if description:
-        label += '\nDescription         = "{}"'.format(description)
-    label += '\n\nEnd'
-    with open(file, 'w') as out:
-        out.write(label)
-
-def create_position_label(file, time, description=None):
-    label =    'SpkTableStartTime    = {}'.format(time)
-    label += '\nSpkTableEndTime      = {}'.format(time)
-    label += '\nSpkTableOriginalSize = 1'
-    if description:
-        label += '\nDescription          = "{}"'.format(description)
-    label += '\n\nEnd'
-    with open(file, 'w') as out:
-        out.write(label)
+import quaternion, argparse, os, subprocess, orientation
 
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -145,14 +39,14 @@ temp_files = [body_rotation_csv, inst_rotation_csv, inst_position_csv]
 
 print('Getting viewing geometry tables from {}'.format(template_image))
 
-get_table(template_image, 'BodyRotation', body_rotation_csv)
-get_table(template_image, 'InstrumentPointing', inst_rotation_csv)
-get_table(template_image, 'InstrumentPosition', inst_position_csv)
+orientation.get_table(template_image, 'BodyRotation', body_rotation_csv)
+orientation.get_table(template_image, 'InstrumentPointing', inst_rotation_csv)
+orientation.get_table(template_image, 'InstrumentPosition', inst_position_csv)
 
 print('Computing new viewing geometry')
 
-position = compute_position(ground_point, args.distance)
-rotation = compute_rotation(ground_point)
+position = orientation.compute_position(ground_point, args.distance)
+rotation = orientation.compute_rotation(ground_point)
 
 print('Creating output image: {}'.format(output_image))
 
@@ -192,30 +86,38 @@ row['J2000Q3'] = 0
 body_rotation[rotation_fields].to_csv(body_rotation_csv, index=False)
 
 # TODO write these out using an actual pvl library
-body_frame = get_key(template_image, 'BODY_FRAME_CODE', object='NaifKeywords')
-camera_frame = get_key(template_image, 'NaifFrameCode', group='Kernels')
+body_frame = orientation.get_key(
+        template_image, 'BODY_FRAME_CODE', object='NaifKeywords')
+camera_frame = orientation.get_key(
+        template_image, 'NaifFrameCode', group='Kernels')
 body_rotation_label = image_basename + '_body_rotation.pvl'
 inst_rotation_label = image_basename + '_instrument_rotation.pvl'
 inst_position_label = image_basename + '_instrument_position.pvl'
 temp_files += [inst_rotation_label, body_rotation_label, inst_position_label]
-create_rotation_label(body_rotation_label, body_frame,
-                      body_rotation.iloc[0]['ET'],
-                      description='created by compute_orientation.py')
-create_rotation_label(inst_rotation_label, camera_frame,
-                      out_rotation.iloc[0]['ET'],
-                      description='created by compute_orientation.py')
-create_position_label(inst_position_label,
-                      out_position.iloc[0]['ET'],
-                      description='created by compute_orientation.py')
+orientation.create_rotation_label(
+        body_rotation_label, body_frame,
+        body_rotation.iloc[0]['ET'],
+        description='created by compute_orientation.py')
+orientation.create_rotation_label(
+        inst_rotation_label, camera_frame,
+        out_rotation.iloc[0]['ET'],
+        description='created by compute_orientation.py')
+orientation.create_position_label(
+        inst_position_label,
+        out_position.iloc[0]['ET'],
+        description='created by compute_orientation.py')
 
 print('Attaching new viewing geometry to {}'.format(output_image))
 
-attach_table(output_image, body_rotation_csv,
-             'BodyRotation', label=body_rotation_label)
-attach_table(output_image, inst_rotation_csv,
-             'InstrumentPointing', label=inst_rotation_label)
-attach_table(output_image, inst_position_csv,
-             'InstrumentPosition', label=inst_position_label)
+orientation.attach_table(
+        output_image, body_rotation_csv,
+        'BodyRotation', label=body_rotation_label)
+orientation.attach_table(
+        output_image, inst_rotation_csv,
+        'InstrumentPointing', label=inst_rotation_label)
+orientation.attach_table(
+        output_image, inst_position_csv,
+        'InstrumentPosition', label=inst_position_label)
 
 if args.clean:
     print('Cleaning up')
