@@ -11,7 +11,7 @@ This script does not use a hash bang so it must be called via
 `python compute_orientation.py <args>`.
 """
 
-
+from __future__ import print_function, division
 import numpy as np
 import pandas as pd
 import quaternion, argparse, os, subprocess
