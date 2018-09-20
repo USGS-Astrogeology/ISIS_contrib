@@ -1,4 +1,4 @@
-name: jupyterdemo
+name: rosetta
 channels:
 - defaults
 - conda-forge
