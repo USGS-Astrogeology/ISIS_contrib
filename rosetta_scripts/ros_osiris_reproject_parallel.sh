@@ -12,11 +12,10 @@
 #                 N20140801T132117651ID30F27
 #                 N20140801T144423558ID30F27
 #
-#  (Required) p - Perspective image: The image whose viewing geometry will be used to reproject, no file extension
+#  (Required) p - Perspective image: The image whose viewing geometry will be used to reproject,
+#        This must be a spiceinited ISIS cube.
 #
 #  i - The directory where the raw .IMG and .LBL files from the previous parameters are located
-#
-#  d - The directory where the perspective image is located
 #
 #  o - The directory where all files will be output
 #
@@ -54,10 +53,6 @@ while getopts 'l:p:i:d:o:m:' OPTION; do
       echo "Directory where raw images are located: $raw_dir"
       ;;
     d)
-      perspective_dir=$(readlink -f "$OPTARG") #"$cwd/$OPTARG"
-      echo "Perspective directory: $perspective_dir"
-      ;;
-    o)
       output_dir=$(readlink -f "$OPTARG") #"$cwd/$OPTARG"
       echo "Output directory: $output_dir"
       ;;
@@ -67,7 +62,7 @@ while getopts 'l:p:i:d:o:m:' OPTION; do
       ;;
     ?)
       #echo "Invalid args: $OPTARG" >&2
-      echo "script usage: $(basename $0) [-l filelist] [-p perspective_image] [-i images_dir] [-d perspective_dir] [-o output_dir] [-m minimum_mask]" >&2
+      echo "script usage: $(basename $0) [-l filelist] [-p perspective_image] [-i images_dir] [-o output_dir] [-m minimum_mask]" >&2
       exit 1
       ;;
   esac
@@ -102,12 +97,6 @@ mkdir -p $stacked_dir
 mkdir -p $log_dir
 cp IsisPreferences_Bullet $output_dir
 
-# ingest and spiceinit the reference perspective image
-rososiris2isis from=$perspective_dir/$perspective_image.IMG to=$ingested_dir/$perspective_image.cub 
-spiceinit from=$ingested_dir/$perspective_image.cub shape=user model=$ISIS3DATA/rosetta/kernels/dsk/ROS_CG_M004_OSPGDLR_U_V1.bds -preference=IsisPreferences_Bullet 
-echo "Reference cube $perspective_image.cub now set up."
-echo ""
-
 # we need to create a big list of all the slurm jobs we're making for later
 slurm_job_names=""
 
@@ -117,7 +106,7 @@ for basename in `cat $cwd/$input_images`; do
   echo "Reprojecting: $basename"
   job_id=$(sbatch --partition=shortall --time=01:00:00 --mem=1000 \
   --job-name=ROS_Projection --output=LOGS/$basename.log --workdir=$output_dir \
-  ros_osiris_reproject_image.sh $basename $ingested_dir/$perspective_image.cub $raw_dir $output_dir $minimum_mask)
+  ros_osiris_reproject_image.sh $basename $perspective_image $raw_dir $output_dir $minimum_mask)
 
 # parameter substitution magic, job_id is "Submitted batch job ######" this
 # extracts the final word
@@ -127,7 +116,7 @@ done
 # mosaic all of the images
 # here we use the big list of slurm jobs to make sure the mosaic happens
 # after everything is reprojected
-echo ros_osiris_mosaic.sh $input_images $output_dir mosaic.cub
+echo "Mosaicing images"
 sbatch --partition=longall --wait --time=01:00:00 --mem=1000 \
 --job-name=ROS_Mosaic --output=LOGS/mosaic.log \
 --workdir=$output_dir  --dependency=afterok$slurm_job_names \
