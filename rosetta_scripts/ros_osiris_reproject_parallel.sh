@@ -21,9 +21,9 @@
 #
 #  m - minimum mask threshold (e.g. 0.0001)
 #
-# Usage: ros_osiris_reproject_parallel.sh -l basenames.lis -p perspective_image -i /path/to/raw/data -d /path/to/perspective/data -o /working/directory -m filter_threshold
+# Usage: ros_osiris_reproject_parallel.sh -l basenames.lis -p /path/to/perspective/data/perspective_image.cub -i /path/to/raw/data -o /output/directory -m filter_threshold
 #
-# Example: ./ros_osiris_reproject_parallel.sh -l batchList_short.txt -p N20140816T165914570ID30F22 -i ./images -d ./perspectives -o ./output -m 0.0001
+# Example: ./ros_osiris_reproject_parallel.sh -l batchList_short.txt -p perspective/path/N20140816T165914570ID30F22.cub -i ./images -o ./output -m 0.0001
 #
 # Authors: Jesse Mapel, Makayla Shepherd, and Kaj Williams
 #
@@ -52,7 +52,7 @@ while getopts 'l:p:i:d:o:m:' OPTION; do
       raw_dir=$(readlink -f "$OPTARG")
       echo "Directory where raw images are located: $raw_dir"
       ;;
-    d)
+    o)
       output_dir=$(readlink -f "$OPTARG") #"$cwd/$OPTARG"
       echo "Output directory: $output_dir"
       ;;
@@ -61,7 +61,7 @@ while getopts 'l:p:i:d:o:m:' OPTION; do
       echo "Minimum mask: $minimum_mask"
       ;;
     ?)
-      #echo "Invalid args: $OPTARG" >&2
+      echo "Invalid args: $OPTARG" >&2
       echo "script usage: $(basename $0) [-l filelist] [-p perspective_image] [-i images_dir] [-o output_dir] [-m minimum_mask]" >&2
       exit 1
       ;;
