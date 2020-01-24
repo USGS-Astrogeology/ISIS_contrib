@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ISIS Contributions
 ============
 
@@ -8,3 +9,6 @@ ISIS3 main website: https://isis.astrogeology.usgs.gov/
 ISIS3 support pages: https://isis.astrogeology.usgs.gov/fixit/projects/isis/news/
 
 These scripts are not officially supported and are to be used at your own risk.
+=======
+# ISIS3_mission_processing_scripts
+>>>>>>> missions/master
