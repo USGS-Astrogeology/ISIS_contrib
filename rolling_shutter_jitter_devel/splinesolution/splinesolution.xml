@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application name="splinesolution" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://isis.astrogeology.usgs.gov/Schemas/Application/application.xsd">
+  <brief>
+    Adds jitter to an image according to the harmonics of the jitter sources provided.
+  </brief>
+
+  <groups>
+
+    <group name="">      
+      <parameter name="REGISTRATIONDATA">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Output file where the table will be written
+        </brief>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+
+      <parameter name="BREAKPOINTS">
+        <type>integer</type>
+        <brief>
+          The number of breakpoints.
+        </brief>
+        <default><item>3</item></default>
+        <minimum inclusive="yes">1</minimum>
+        
+      </parameter>
+      <parameter name="DEGREE">
+        <type>integer</type>
+        <brief>
+          The degree of the splines.
+        </brief>
+        <default><item>4</item></default>
+        <minimum inclusive="no">1</minimum>
+      </parameter>
+      <parameter name="COEFFICIENTS">
+        <type>integer</type>
+        <brief>
+          The number of coefficients
+        </brief>
+        <default><item>4</item></default>
+        <minimum inclusive="no">1</minimum>
+      </parameter>
+    </group>
+  </groups>
+
+</application>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application name="eisCheckTable" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://isis.astrogeology.usgs.gov/Schemas/Application/application.xsd">
+  <brief>
+    Generates a table that defines order in which lines are read out for EIS rolling shutter camera.
+    This application generated three files: the whole table, the normal read out table, and the 
+    checkline table. The normal table and the checkline table will use the name of the whole table
+    but it will add _normal to the normal table file, and it will add _shadow or _reverse to the checkline
+    table according to the checkline type selected.
+  </brief>
+
+  <groups>
+
+    <group name="">
+      <parameter name="TO">
+        <type>filename</type>
+        <fileMode>output</fileMode>
+        <brief>
+          Output file where the entire read out table will be written. This filename will serve as 
+          the base for the other two files produced, the checkline table, and the normal line table.
+        </brief>
+      </parameter>
+      
+      <parameter name="NLINES">
+        <type>integer</type>
+        <brief>Number of Lines</brief>
+        <description>
+          This defines how many lines will be extracted from the input cube,
+          if LINC is 1. Otherwise, the number of lines actually extracted from 
+          the input cube is NLINES/LINC.
+        </description>
+
+        <minimum inclusive="yes">1</minimum>
+      </parameter>
+      
+      <parameter name="EXPOSURETIME">
+        <type>double</type>
+        <brief>The exposure duration of the image without checklines in seconds</brief>
+        <description>
+        </description>
+        <minimum inclusive="yes">0.00000000001</minimum>
+      </parameter>
+      
+      <parameter name="CHECKLINECOUNT">
+        <type>integer</type>
+        <brief>Number of checklines</brief>
+        <description>
+          This determines the number of checklines to be added. Each checkline added will increase the 
+          overall time it takes to take the entire image including the checklines.
+        </description>
+        <minimum inclusive="yes">0</minimum>
+      </parameter>
+      <parameter name="UNIQUECHECKLINES">
+        <type>integer</type>
+        <brief>The number of distinct checklines</brief>
+        <description>
+          This is the number of unique checklines. Example: For a 2250 line table, if you choose
+          3 repeated checklines the checklines would be 528, 1083, 1638 to evenly distribute over 
+          the table. If you have 60 checklines and 3 repeated checklines for a 2250 line table the
+          checkline readout would be 528,1083,1638,528,1083,1638... until each unique checkline is 
+          repeated 20 times, making 60 checklines total. If you have 60 checklines and 60 unique 
+          checklines, each checkline will be unique.
+        </description>
+      </parameter>
+    </group>
+  </groups>
+
+</application>
