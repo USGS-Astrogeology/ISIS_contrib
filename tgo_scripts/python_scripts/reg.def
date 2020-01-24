@@ -1,0 +1,23 @@
+# def file for subpixel registering control nets across filters.
+
+ Object = AutoRegistration
+   Group = Algorithm
+     Name         = MaximumCorrelation
+     Tolerance    = 0.7
+
+     # Valid gradient value is Sobel.
+    # Gradient = Sobel
+   EndGroup
+ 
+   Group = PatternChip
+     Samples = 11
+     Lines   = 11
+   EndGroup
+ 
+   Group = SearchChip
+     Samples = 31
+     Lines   = 31
+   EndGroup
+ EndObject
+
+
