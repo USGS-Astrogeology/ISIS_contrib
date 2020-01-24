@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application name="dejitter" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://isis.astrogeology.usgs.gov/Schemas/Application/application.xsd">
+  <brief>
+    Removes jitter from an image according to the coefficients of an nth degree polynomial.
+  </brief>
+
+  <groups>
+
+    <group name="">
+      
+      <parameter name="FROM">
+        <type>cube</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Input jittered normal cube.
+        </brief>
+        <filter>
+          *.cub
+        </filter>
+      </parameter>
+      
+      <parameter name="COEFFICIENTS">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Input file that holds the coefficients produced by leastsquaressolution.
+        </brief>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+      
+      <parameter name="NORMALLINETABLE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          The csv file that contains the line numbers and times of the normal cube.
+        </brief>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+      
+      <parameter name="TO">
+        <type>cube</type>
+        <fileMode>output</fileMode>
+        <brief>
+          Output dejittered cube.
+        </brief>
+        <filter>
+          *.cub
+        </filter>
+      </parameter>
+     
+    </group>
+  </groups>
+
+</application>

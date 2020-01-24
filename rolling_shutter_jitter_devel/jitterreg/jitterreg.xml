@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application name="jitterreg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://isis.astrogeology.usgs.gov/Schemas/Application/application.xsd">
+  <brief>
+    Registers lines from a normal image with lines from the check image.
+  </brief>
+
+  <groups>
+    <group name="Inputs">
+      <parameter name="JITTEREDCUBE">
+        <type>cube</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Input cube containing the jittered normal lines.
+        </brief>
+        <filter>
+          *.cub
+        </filter>
+      </parameter>
+      
+      <parameter name="CHECKCUBE">
+        <type>cube</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Input cube containing the jittered check lines.
+        </brief>
+        <filter>
+          *.cub
+        </filter>
+      </parameter>
+      
+      <parameter name="NORMALLINETABLE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          The csv file containing the readout line numbers and times of the normal cube.
+        </brief>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+      
+      <parameter name="CHECKLINETABLE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          The csv file containing the readout line numbers and times of the check cube
+        </brief>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+      
+      <parameter name="DEFFILE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          The Auto Registration definition file
+        </brief>
+        <filter>
+          *.def
+        </filter>
+      </parameter>
+      
+      <parameter name="SCALE">
+        <type>double</type>
+        <brief>
+          The scale of the image.
+        </brief>
+        <description>
+          This is the scale of the image. Only use this parameter if you have enlarged the cube.
+          This will allow the program to access the correct normal cube line number based on the 
+          un-enlarged checktable values.
+          Example: For a 4x enlargement set this value to 4.0.
+        </description>
+        <default>1.0</default>
+      </parameter>
+      
+      <parameter name="TO">
+        <type>filename</type>
+        <fileMode>output</fileMode>
+        <brief>
+          Output file where the registration results will be written.
+        </brief>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+      
+    </group>
+  </groups>
+
+</application>

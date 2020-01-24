@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application name="addjitter" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://isis.astrogeology.usgs.gov/Schemas/Application/application.xsd">
+
+  <brief>
+    Adds harmonic jitter to a cube.
+  </brief>
+
+  <description>
+    This program will add harmonic jitter to a cube.
+  </description>
+
+  <category>
+    <categoryItem>Geometry</categoryItem>
+  </category>
+
+  <groups>
+    <group name="Files">
+      <parameter name="FROM">
+        <type>cube</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Input cube to add harmonic jitter to.
+        </brief>
+        <description>
+          Use this parameter to select the filename. All bands within the file
+          will have jitter added in the same way.
+        </description>
+        <filter>
+          *.cub
+        </filter>
+      </parameter>
+
+      <parameter name="JITTERSOURCE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          Five column CSV with: frequency, sample amplitude, sample phase, line amplitude, line phase
+        </brief>
+        <description>
+          Use this parameter to select the filename that contains the deffinitions of jitter.
+          The CSV file should contain 5 columns: frequency, sample amplitude, sample phase, 
+          line amplitude, line phase. There is no limit to the number of rows. All rows will be 
+          summed to set the total sample and line offsets.
+        </description>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+
+      <parameter name="NORMALLINETABLE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          CSV with normal readout line numbers and time
+        </brief>
+        <description>
+          Use this parameter to select the filename that contains the normal readout lines only.
+          That is all the normal lines without any check lines interspersed. The CSV is (line#, time).
+        </description>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+
+      <parameter name="CHECKLINETABLE">
+        <type>filename</type>
+        <fileMode>input</fileMode>
+        <brief>
+          CSV with checkline readout line numbers and time
+        </brief>
+        <description>
+          Use this parameter to select the filename that contains the checkline readout lines only.
+          Only the checklines and times are in this file. The CSV is (line#, time).
+        </description>
+        <filter>
+          *.csv
+        </filter>
+      </parameter>
+      
+      <parameter name="NORMALTO">
+        <type>cube</type>
+        <fileMode>output</fileMode>
+        <brief>
+          Output cube
+        </brief>
+        <description>
+          This cube is the full image cube will jitter added.
+        </description>
+      </parameter>
+      
+      <parameter name="CHECKLINETO">
+        <type>cube</type>
+        <fileMode>output</fileMode>
+        <brief>
+          Output cube
+        </brief>
+        <description>
+          This cube is the checkline cube. The checklines are produced based on the checkline table
+          input. This cube is a 
+        </description>
+      </parameter>
+      
+      <parameter name="INTERPOLATION">
+        <type>string</type>
+        <list>
+          <option value="CUBICCONVOLUTION"></option>
+          <option value="BILINEAR"></option>
+        </list>
+      </parameter>
+    </group>
+  </groups>
+
+</application>
