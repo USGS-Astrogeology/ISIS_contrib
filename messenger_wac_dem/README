@@ -1,0 +1,41 @@
+This directory contains the scripts used to create a WAC only DEM from all
+MESSENGER orbital images. The first isisminer run is with the
+mdis_image_overlaps.conf CONFIG file. It reads from an SQLite database
+that is not generally available, but can (and was) created using output
+from the caminfo application. The output of this is a 10x10 region based
+set of CSV files of image overlap information. These files are then input
+into the next isisminer run of mdis_wac_matcher.conf.  After all these
+files have been run, here is the list of the general steps to create a DEM:
+
+
+1) Run all EW*_overlap.csv files in /scratch/kbecker/MESSENGER/Control/Overlaps
+   (i.e., find /scratch/kbecker/MESSENGER/Control/Overlaps -name 'EW*_overlaps.csv')
+   with mdis_wac_matcher.conf to create image-based control networks (from 118,267
+   WAC image overlap sets).
+2) Combine all these image-based files into a single global control network
+   using cnetcombinept.
+3) Run cnetcheck of the global network to identify issues.
+4) Run jigsaw to control images (will likely take a few days without error
+   propagation).
+5) Run cnet2dem to create interpolated DEM.
+6) Run series of noise and smoothing filters on DEM from previous step.
+7) Run ckwriter on the updated images to generate CK kernel.
+
+Note, the control network is likely to be ginormous. You may need up to 512GB
+of memory to complete these steps.  Also, use of a compute cluster is highly
+recommended!
+
+-------------
+
+To create a PDS table of the control point cloud, you can use the CONFIG
+jigsaw_bundleout_sigmas_pdsfmt.conf. This requires the bundleout points file
+created by jigsaw that *MUST* have error propagation turned on (without error
+propagation, the format of the outfile is missing columns which will result
+in very bad things!).  The config file shows how POINTCLOUDTAB.FMT is created
+but is disabled (by adding "_DNE" to the Strategy Object keyword) - this can
+be time consuming.  Here is the command used to create the MESSENGER PDS
+pointcloud table:
+
+isisminer config=$ISIS3DATA/base/templates/isisminer/jigsaw_bundleout_sigmas_pdsfmt.conf \
+          parameters="bundleout:RadAngTwist_global_jigsaw_errorprop_bundleout_points.csv \
+          @tofmt:$ISIS3DATA/base/templates/isisminer/POINTCLOUDTAB.FMT@totab:MSGR_DEM_USG_EQ_C_V01.TAB"
