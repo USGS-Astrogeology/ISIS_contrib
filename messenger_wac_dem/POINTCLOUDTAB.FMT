@@ -1,0 +1,191 @@
+OBJECT = COLUMN
+  COLUMN_NUMBER = 1
+  NAME          = POINT_ID
+  DATA_TYPE     = CHARACTER
+  UNIT          = NONE
+  START_BYTE    = 2
+  BYTES         = 32
+  DESCRIPTION   = "Unique point identifier for each jigsaw control point."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 2
+  NAME          = STATUS
+  DATA_TYPE     = CHARACTER
+  UNIT          = NONE
+  START_BYTE    = 37
+  BYTES         = 12
+  DESCRIPTION   = "Status of point.  It can be FREE, FIXED or CONSTRAINED."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 3
+  NAME          = ACCEPTED_MEASURES
+  DATA_TYPE     = ASCII_INTEGER
+  UNIT          = NONE
+  START_BYTE    = 51
+  BYTES         = 4
+  DESCRIPTION   = "Number of accepted (non-rejected) measures for the control
+                   point. This is actually the number of images that contain
+                   the control point (also referred to as the point depth)."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 4
+  NAME          = REJECTED_MEASURES
+  DATA_TYPE     = ASCII_INTEGER
+  UNIT          = NONE
+  START_BYTE    = 56
+  BYTES         = 4
+  DESCRIPTION   = "Number of measures rejected by jigsaw during the bundle
+                   adjustment (if outlier rejection is active)"
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 5
+  NAME          = RESIDUAL_RMS
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = PIXELS
+  START_BYTE    = 61
+  BYTES         = 8
+  DESCRIPTION   = "Root mean square error of residuals for a point. 
+                   Indicates the statistical measure of variation in the
+                   difference of each measure within a control point."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 6
+  NAME          = ADJUSTED_LATITUDE
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = DEGREES
+  START_BYTE    = 70
+  BYTES         = 16
+  DESCRIPTION   = "Latitude coordinate of the control point. This is the
+                   adjusted location of the control point after jigsaw bundle
+                   adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 7
+  NAME          = ADJUSTED_LONGITUDE
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = DEGREES
+  START_BYTE    = 87
+  BYTES         = 16
+  DESCRIPTION   = "Longitude coordinate of control point. This is the
+                   adjusted location of the control point after jigsaw bundle
+                   adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 8
+  NAME          = ADJUSTED_RADIUS
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = KILOMETERS
+  START_BYTE    = 104
+  BYTES         = 16
+  DESCRIPTION   = "Radius of control point. This is the adjusted radius of
+                   the control point after jigsaw bundle adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 9
+  NAME          = SIGMA_LATITUDE
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = METERS
+  START_BYTE    = 121
+  BYTES         = 16
+  DESCRIPTION   = "Adjusted uncertainty of Latitude coordinate of the control
+                   point after jigsaw bundle adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 10
+  NAME          = SIGMA_LONGITUDE
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = METERS
+  START_BYTE    = 138
+  BYTES         = 16
+  DESCRIPTION   = "Adjusted uncertainty of Longitude coordinate of the
+                   control point after jigsaw bundle adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 11
+  NAME          = SIGMA_RADIUS
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = METERS
+  START_BYTE    = 155
+  BYTES         = 16
+  DESCRIPTION   = "Adjusted uncertainty of Radius coordinate of the control
+                   point after jigsaw bundle adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 12
+  NAME          = DELTA_LATITUDE
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = METERS
+  START_BYTE    = 172
+  BYTES         = 16
+  DESCRIPTION   = "Latitude adjustment. The number of meters the latitude
+                   coordinate has been adjusted by the jigsaw bundle
+                   adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 13
+  NAME          = DELTA_LONGITUDE
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = METERS
+  START_BYTE    = 189
+  BYTES         = 16
+  DESCRIPTION   = "Longitude adjustment. The number of meters the longitude
+                   coordinate has been adjusted by the jigsaw bundle
+                   adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 14
+  NAME          = DELTA_RADIUS
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = METERS
+  START_BYTE    = 206
+  BYTES         = 16
+  DESCRIPTION   = "Radius adjustment. The number of meters the radius has
+                   been adjusted by the jigsaw bundle adjustment."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 15
+  NAME          = X
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = KILOMETERS
+  START_BYTE    = 223
+  BYTES         = 16
+  DESCRIPTION   = "Body-fixed X coordinate of the vector from the center of
+                   the target body to the surface coordinate location."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 16
+  NAME          = Y
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = KILOMETERS
+  START_BYTE    = 240
+  BYTES         = 16
+  DESCRIPTION   = "Body-fixed Y coordinate of the vector from the center of
+                   the target body to the surface coordinate location."
+END_OBJECT = COLUMN
+
+OBJECT = COLUMN
+  COLUMN_NUMBER = 17
+  NAME          = Z
+  DATA_TYPE     = ASCII_REAL
+  UNIT          = KILOMETERS
+  START_BYTE    = 257
+  BYTES         = 16
+  DESCRIPTION   = "Body-fixed Z coordinate of the vector from the center of
+                   the target body to the surface coordinate location."
+END_OBJECT = COLUMN
+END
